@@ -1,0 +1,16 @@
+{
+  "source": "Unity",
+  "applications": [
+    {
+      "app_key": "application.generated.unity.multileap.exe",
+      "launch_type": "url",
+      "url": "steam://launch/",
+      "action_manifest_path": "C:\\Users\\CalChiu\\Downloads\\HAND TEST\\Multi Leap\\actions.json",
+      "strings": {
+        "en_us": {
+          "name": "Multi Leap [Testing]"
+        }
+      }
+    }
+  ]
+}
