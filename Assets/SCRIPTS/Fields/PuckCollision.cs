@@ -27,6 +27,7 @@ namespace AirHockey.Fields
 
         private void FixedUpdate()
         {
+            // Limit the position of the puck so that it does not go out of the table.
             Vector3 pos = _rigidBody.position;
             if (pos.z > -1.3 && pos.z < 0)
             {
@@ -49,6 +50,8 @@ namespace AirHockey.Fields
 
         private void OnCollisionEnter(Collision other)
         {
+            // When the puck collide with goal object, change the score.
+            Debug.Log(other.gameObject.name);
             GoalEntity entity;
             if (other.transform.TryGetComponent(out entity))
             {
@@ -62,6 +65,7 @@ namespace AirHockey.Fields
 
                 // Set puck to initial position and add weak force
                 transform.position = _initialPosition;
+                _rigidBody.velocity = Vector3.zero;
                 _rigidBody.AddForce(initialForce);
             }
             

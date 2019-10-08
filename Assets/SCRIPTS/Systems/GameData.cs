@@ -20,7 +20,7 @@ namespace AirHockey.Systems
 		{
 			Instance.Scores[type] += 1;
 
-			EventManager.InvokeScoringEvent(type, Scores[type]);
+			EventManager.InvokeScoringEvent(type, Instance.Scores[type]);
 		}
 	}
 }
