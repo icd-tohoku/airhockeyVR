@@ -72,13 +72,20 @@ public class TrueMotionObjectVer : MonoBehaviour {
 
         Application.runInBackground = true;
 
-        storm = new SerialPort(serialPort, 115200);
-		if (!storm.IsOpen) storm.Open();
+        try
+        {
+            storm = new SerialPort(serialPort, 115200);
+            if (!storm.IsOpen) storm.Open();
 
-        controller = deviceProvider.GetLeapController();
-        controller.FrameReady += onFrame;
+            controller = deviceProvider.GetLeapController();
+            controller.FrameReady += onFrame;
 
-        borderCollision = false;
+            borderCollision = false;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning(e);
+        }
 	}
 	
 	// ================================================================================ UPDATE
@@ -230,7 +237,7 @@ public class TrueMotionObjectVer : MonoBehaviour {
         if(pos.z < -2.3)  pos.z = -2.3f;
 
         if(!borderCollision) {
-            gameObject.GetComponent<Rigidbody>().MovePosition(pos * 0.55f);
+            //gameObject.GetComponent<Rigidbody>().MovePosition(pos * 0.55f);
         }
 
 	}
