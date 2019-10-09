@@ -6,8 +6,7 @@ namespace AirHockey.Data
 {
     public enum PlayerType
     {
-        None,
-        Player1,
-        Player2
+        Desktop,
+        VR
     }
 }

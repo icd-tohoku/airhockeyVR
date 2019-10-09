@@ -18,6 +18,11 @@ namespace AirHockey.Fields
         private Rigidbody _rigidBody;
         private Vector3 _initialPosition;
 
+        private void Awake()
+        {
+            EventManager.GameFinishEvent += DestroySelf;
+        }
+
         private void Start()
         {
             _initialPosition = transform.position;
@@ -44,6 +49,16 @@ namespace AirHockey.Fields
             }
         }
 
+        private void OnDestroy()
+        {
+            EventManager.GameFinishEvent -= DestroySelf;
+        }
+
+        private void DestroySelf(PlayerType winner)
+        {
+            Destroy(gameObject);
+        }
+
         private void OnCollisionEnter(Collision other)
         {
             // When the puck collide with goal object, change the score.
@@ -52,9 +67,8 @@ namespace AirHockey.Fields
             {
                 switch (entity.GoalOwner)
                 {
-                    case PlayerType.Player1: GameData.AddScore(PlayerType.Player2); break;
-                    case PlayerType.Player2: GameData.AddScore(PlayerType.Player1); break;
-                    case PlayerType.None: Debug.LogWarning($"[PuckCollision] Goal owner has not set in gameObject: {entity.name}"); break;
+                    case PlayerType.Desktop: GameData.AddScore(PlayerType.VR); break;
+                    case PlayerType.VR: GameData.AddScore(PlayerType.Desktop); break;
                     default: throw new Exception($"[PuckCollision] Unknown player: {entity.GoalOwner}");
                 }
 

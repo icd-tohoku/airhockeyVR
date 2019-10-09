@@ -10,7 +10,7 @@ namespace AirHockey.UI
 {
     public class ScoreBoard : MonoBehaviour
     {
-        [SerializeField] private PlayerType playerType = PlayerType.None;
+        [SerializeField] private PlayerType playerType;
         [SerializeField] private Text scoreBoard = null;
 
         private void Awake()
