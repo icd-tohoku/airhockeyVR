@@ -47,8 +47,9 @@ namespace AirHockey.Fields
                 // Paddle and Puck have capsule collider, so we can use their position directly to detect the direction to add force
                 var direction = (other.transform.position - transform.position).normalized;
                 direction.y = 1.8f;
-                
+
                 // Add force as impulse
+                other.rigidbody.velocity = Vector3.zero;
                 other.rigidbody.AddForce(hitForce * direction, ForceMode.Impulse);
             }
         }
