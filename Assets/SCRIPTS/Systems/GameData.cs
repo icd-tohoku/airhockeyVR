@@ -16,7 +16,7 @@ namespace AirHockey.Systems
 			{PlayerType.Player2, 0}
 		};
 
-		public void AddScore(PlayerType type)
+		public static void AddScore(PlayerType type)
 		{
 			Instance.Scores[type] += 1;
 

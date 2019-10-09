@@ -11,6 +11,9 @@ namespace AirHockey.Fields
     public class PuckCollision : MonoBehaviour
     {
         [SerializeField] private Vector3 initialForce = new Vector3(0, 0, -0.5f);
+
+        [SerializeField] private Transform positionLimit_XY_P = null;
+        [SerializeField] private Transform positionLimit_XY_N = null;
         
         private Rigidbody _rigidBody;
         private Vector3 _initialPosition;
@@ -28,37 +31,29 @@ namespace AirHockey.Fields
         private void FixedUpdate()
         {
             // Limit the position of the puck so that it does not go out of the table.
-            Vector3 pos = _rigidBody.position;
-            if (pos.z > -1.3 && pos.z < 0)
+            if (transform.position.x > positionLimit_XY_P.position.x || transform.position.x < positionLimit_XY_N.position.x)
             {
-                _rigidBody.AddForce(new Vector3(0, 0, -0.02f));
-            }
-            else if (pos.z < 1.3 && pos.z > 0)
-            {
-                _rigidBody.AddForce(new Vector3(0, 0, 0.02f));
+                var v = _rigidBody.velocity;
+                _rigidBody.velocity = new Vector3(-v.x, v.y, v.z);
             }
 
-            if (pos.z > 2.3)
+            if (transform.position.z > positionLimit_XY_P.position.z || transform.position.z < positionLimit_XY_N.position.z)
             {
-                _rigidBody.AddForce(new Vector3(0, 0, -10f));
-            }
-            else if (pos.z < -2.3)
-            {
-                _rigidBody.AddForce(new Vector3(0, 0, 10f));
+                var v = _rigidBody.velocity;
+                _rigidBody.velocity = new Vector3(v.x, v.y, -v.z);
             }
         }
 
         private void OnCollisionEnter(Collision other)
         {
             // When the puck collide with goal object, change the score.
-            Debug.Log(other.gameObject.name);
             GoalEntity entity;
             if (other.transform.TryGetComponent(out entity))
             {
                 switch (entity.GoalOwner)
                 {
-                    case PlayerType.Player1: GameData.Instance.AddScore(PlayerType.Player2); break;
-                    case PlayerType.Player2: GameData.Instance.AddScore(PlayerType.Player1); break;
+                    case PlayerType.Player1: GameData.AddScore(PlayerType.Player2); break;
+                    case PlayerType.Player2: GameData.AddScore(PlayerType.Player1); break;
                     case PlayerType.None: Debug.LogWarning($"[PuckCollision] Goal owner has not set in gameObject: {entity.name}"); break;
                     default: throw new Exception($"[PuckCollision] Unknown player: {entity.GoalOwner}");
                 }
