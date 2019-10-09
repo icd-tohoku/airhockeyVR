@@ -237,9 +237,8 @@ public class TrueMotionObjectVer : MonoBehaviour {
         if(pos.z < -2.3)  pos.z = -2.3f;
 
         if(!borderCollision) {
-            //gameObject.GetComponent<Rigidbody>().MovePosition(pos * 0.55f);
+            gameObject.GetComponent<Rigidbody>().MovePosition(pos * 0.55f);
         }
-
 	}
 
     void OnCollisionEnter(Collision c) {
