@@ -142,7 +142,7 @@ public class TrueMotionObjectVer : MonoBehaviour {
         if (currentFrame.Hands.Count != 0) {
             Hand hand = currentFrame.Hands[0];
             Vector pos = hand.PalmPosition;
-            int angleThreshold = 8; float angularSpeed = 1; int hThreshold = 50; int vThreshold = 30;
+            int angleThreshold = 8; float angularSpeed = 1; int hThreshold = 50; int vThreshold = 10;
 
             //SPEED THRESHOLD
             palmSpeed = hand.PalmVelocity.Magnitude;
@@ -164,8 +164,6 @@ public class TrueMotionObjectVer : MonoBehaviour {
                 vAngle = Convert.ToSingle((Math.Atan(-pos.z / pos.y)) * (180 / Math.PI));
                 //hAngle = Convert.ToSingle((Math.Atan(-pos.x / pos.y)) * (180 / Math.PI));
             }
-
-            
 
             if (vAngle > -angleThreshold && vAngle < angleThreshold) vAngle = 0;
             if (hAngle > -angleThreshold && hAngle < angleThreshold) hAngle = 0;
