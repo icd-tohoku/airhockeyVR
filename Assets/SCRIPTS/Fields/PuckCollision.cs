@@ -38,16 +38,17 @@ namespace AirHockey.Fields
 
         private void FixedUpdate()
         {
+            var p = transform.position;
+            var v = _rigidBody.velocity;
+            
             // Limit the position of the puck so that it does not go out of the table.
-            if (transform.position.x > positionLimit_XY_P.position.x || transform.position.x < positionLimit_XY_N.position.x)
+            if ((p.x > positionLimit_XY_P.position.x && v.x > 0) || (p.x < positionLimit_XY_N.position.x && v.x < 0))
             {
-                var v = _rigidBody.velocity;
                 _rigidBody.velocity = new Vector3(-v.x, v.y, v.z);
             }
-
-            if (transform.position.z > positionLimit_XY_P.position.z || transform.position.z < positionLimit_XY_N.position.z)
+            
+            if ((p.z > positionLimit_XY_P.position.z && v.z > 0) || (p.z < positionLimit_XY_N.position.z && v.z < 0))
             {
-                var v = _rigidBody.velocity;
                 _rigidBody.velocity = new Vector3(v.x, v.y, -v.z);
             }
         }
