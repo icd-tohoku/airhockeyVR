@@ -21,13 +21,15 @@ namespace AirHockey.Fields
         private void Awake()
         {
             EventManager.GameFinishEvent += DestroySelf;
+            EventManager.InitPuckEvent += Initialize;
         }
 
         private void Start()
         {
             _initialPosition = transform.position;
             _rigidBody = gameObject.GetComponent<Rigidbody>();
-            _rigidBody.AddForce(initialForce, ForceMode.Impulse);
+            
+            Initialize();
 
             if (Display.displays.Length > 1)
                 Display.displays[1].Activate();
@@ -52,6 +54,7 @@ namespace AirHockey.Fields
         private void OnDestroy()
         {
             EventManager.GameFinishEvent -= DestroySelf;
+            EventManager.InitPuckEvent -= Initialize;
         }
 
         private void DestroySelf(PlayerType winner)
@@ -72,12 +75,7 @@ namespace AirHockey.Fields
                     default: throw new Exception($"[PuckCollision] Unknown player: {entity.GoalOwner}");
                 }
 
-                // Set puck to initial position and add weak force
-                transform.position = _initialPosition;
-                initialForce *= -1;
-                
-                _rigidBody.velocity = Vector3.zero;
-                _rigidBody.AddForce(initialForce);
+                Initialize(true);
             }
             
             /*if (other.gameObject.name == "AirHockeyPad" || other.gameObject.name == "AirHockeyPad (1)")
@@ -94,6 +92,16 @@ namespace AirHockey.Fields
                 //puckBody.AddForce(puckBody.velocity.normalized * 5f);
                 Debug.Log("ca tape la table");
             }*/
+        }
+
+        private void Initialize(bool inverseInitialForceDirection = false)
+        {
+            // Set puck to initial position and add weak force
+            transform.position = _initialPosition;
+            initialForce *= inverseInitialForceDirection ? -1 : 1;
+            
+            _rigidBody.velocity = Vector3.zero;
+            _rigidBody.AddForce(initialForce);
         }
     }
 }

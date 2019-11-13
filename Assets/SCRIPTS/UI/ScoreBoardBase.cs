@@ -4,31 +4,23 @@ using System.Collections.Generic;
 using AirHockey.Data;
 using AirHockey.Systems;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace AirHockey.UI
 {
-    public class ScoreBoard : MonoBehaviour
+    public abstract class ScoreBoardBase : MonoBehaviour
     {
-        [SerializeField] private PlayerType playerType;
-        [SerializeField] private Text scoreBoard = null;
+        [SerializeField] protected PlayerType playerType;
 
         private void Awake()
         {
             EventManager.ScoringEvent += OnScoreChanged;
         }
 
-        private void OnScoreChanged(PlayerType type, int score)
-        {
-            if (type == playerType)
-            {
-                scoreBoard.text = $"{playerType}: {score}";
-            }
-        }
-
         private void OnDestroy()
         {
             EventManager.ScoringEvent -= OnScoreChanged;
         }
+
+        protected abstract void OnScoreChanged(PlayerType type, int score);
     }
 }
