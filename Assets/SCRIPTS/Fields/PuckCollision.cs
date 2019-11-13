@@ -10,7 +10,7 @@ namespace AirHockey.Fields
 {
     public class PuckCollision : MonoBehaviour
     {
-        [SerializeField] private Vector3 initialForce = new Vector3(0, 0, -0.5f);
+        [SerializeField] private Vector3 initialForce;
 
         [SerializeField] private Transform positionLimit_XY_P = null;
         [SerializeField] private Transform positionLimit_XY_N = null;
@@ -27,7 +27,7 @@ namespace AirHockey.Fields
         {
             _initialPosition = transform.position;
             _rigidBody = gameObject.GetComponent<Rigidbody>();
-            _rigidBody.AddForce(initialForce);
+            _rigidBody.AddForce(initialForce, ForceMode.Impulse);
 
             if (Display.displays.Length > 1)
                 Display.displays[1].Activate();
@@ -74,6 +74,8 @@ namespace AirHockey.Fields
 
                 // Set puck to initial position and add weak force
                 transform.position = _initialPosition;
+                initialForce *= -1;
+                
                 _rigidBody.velocity = Vector3.zero;
                 _rigidBody.AddForce(initialForce);
             }
