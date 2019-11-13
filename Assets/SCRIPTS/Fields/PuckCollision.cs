@@ -20,15 +20,16 @@ namespace AirHockey.Fields
 
         private void Awake()
         {
-            EventManager.GameFinishEvent += DestroySelf;
+            EventManager.GameStartEvent += ActivateSelf;
+            EventManager.GameFinishEvent += DeactivateSelf;
             EventManager.InitPuckEvent += Initialize;
-        }
 
-        private void Start()
-        {
             _initialPosition = transform.position;
             _rigidBody = gameObject.GetComponent<Rigidbody>();
-            
+        }
+
+        private void OnEnable()
+        {
             Initialize();
 
             if (Display.displays.Length > 1)
@@ -53,13 +54,19 @@ namespace AirHockey.Fields
 
         private void OnDestroy()
         {
-            EventManager.GameFinishEvent -= DestroySelf;
+            EventManager.GameStartEvent -= ActivateSelf;
+            EventManager.GameFinishEvent -= DeactivateSelf;
             EventManager.InitPuckEvent -= Initialize;
         }
 
-        private void DestroySelf(PlayerType winner)
+        private void ActivateSelf()
         {
-            Destroy(gameObject);
+            gameObject.SetActive(true);
+        }
+
+        private void DeactivateSelf(PlayerType winner)
+        {
+            gameObject.SetActive(false);
         }
 
         private void OnCollisionEnter(Collision other)

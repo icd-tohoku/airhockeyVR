@@ -5,10 +5,12 @@ namespace AirHockey.Systems
 {
     public static class EventManager
     {
+        public static event Action GameStartEvent;
         public static event Action<PlayerType, int> ScoringEvent;
         public static event Action<PlayerType> GameFinishEvent;
         public static event Action<bool> InitPuckEvent;
 
+        public static void InvokeGameStartEvent() => GameStartEvent?.Invoke();
         public static void InvokeScoringEvent(PlayerType type, int score) => ScoringEvent?.Invoke(type, score);
         public static void InvokeGameFinishEvent(PlayerType winner) => GameFinishEvent?.Invoke(winner);
         public static void InvokeInitPuckEvent(bool inverseInitialForceDirection) 

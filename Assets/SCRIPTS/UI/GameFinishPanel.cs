@@ -19,10 +19,18 @@ namespace AirHockey.UI
         [SerializeField] private Text loseText = null;
         [SerializeField] private Button restartButton = null;
         [SerializeField] private Button quitGameButton = null;
-        
+
+        [SerializeField] private float restartGameInterval;
+
         private void Awake()
         {
+            gameObject.SetActive(false);
+            restartButton.gameObject.SetActive(true);
+            quitGameButton.gameObject.SetActive(true);
+            GetComponent<Image>().enabled = true;
+            
             EventManager.GameFinishEvent += OnGameFinish;
+            
             restartButton.onClick.AddListener(OnRestartButtonClicked);
             quitGameButton.onClick.AddListener(OnQuitButtonClicked);
         }
@@ -38,9 +46,23 @@ namespace AirHockey.UI
                 loseText.gameObject.SetActive(true);
             }
             
-            gameObject.GetComponent<Image>().enabled = true;
-            restartButton.gameObject.SetActive(true);
-            quitGameButton.gameObject.SetActive(true);
+            gameObject.SetActive(true);
+
+            StartCoroutine(RestartGameCoroutine());
+        }
+
+        private IEnumerator RestartGameCoroutine()
+        {
+            yield return new WaitForSeconds(restartGameInterval);
+
+            gameObject.SetActive(false);
+            winText.gameObject.SetActive(false);
+            loseText.gameObject.SetActive(false);
+            
+            GameData.ChangeScore(PlayerType.Desktop, 0);
+            GameData.ChangeScore(PlayerType.VR, 0);
+            
+            EventManager.InvokeGameStartEvent();
         }
 
         private void OnRestartButtonClicked()
