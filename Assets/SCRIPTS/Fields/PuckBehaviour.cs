@@ -8,12 +8,13 @@ using UnityEngine.UI;
 
 namespace AirHockey.Fields
 {
-    public class PuckCollision : MonoBehaviour
+    public class PuckBehaviour : MonoBehaviour
     {
         [SerializeField] private Vector3 initialForce;
 
         [SerializeField] private Transform positionLimit_XY_P = null;
         [SerializeField] private Transform positionLimit_XY_N = null;
+        [SerializeField] private Transform centerThresholdMarker = null;
         
         private Rigidbody _rigidBody;
         private Vector3 _initialPosition;
@@ -38,10 +39,10 @@ namespace AirHockey.Fields
 
         private void FixedUpdate()
         {
+            // Limit the position of the puck so that it does not go out of the table.
             var p = transform.position;
             var v = _rigidBody.velocity;
             
-            // Limit the position of the puck so that it does not go out of the table.
             if ((p.x > positionLimit_XY_P.position.x && v.x > 0) || (p.x < positionLimit_XY_N.position.x && v.x < 0))
             {
                 _rigidBody.velocity = new Vector3(-v.x, v.y, v.z);
@@ -51,6 +52,20 @@ namespace AirHockey.Fields
             {
                 _rigidBody.velocity = new Vector3(v.x, v.y, -v.z);
             }
+            
+            // Add force when the puck is too slow and positioned at center of table.
+            /*var distance = Mathf.Abs(transform.position.z);
+            if (distance < centerThresholdMarker.position.z && _rigidBody.velocity.magnitude < 0.1f)
+            {
+                if (transform.position.z < 0)
+                {
+                    _rigidBody.AddForce(new Vector3(distance - transform.position.z, 0, 0));
+                }
+                else
+                {
+                    _rigidBody.AddForce(new Vector3(transform.position.z - distance, 0, 0));
+                }
+            }*/
         }
 
         private void OnDestroy()
@@ -82,24 +97,11 @@ namespace AirHockey.Fields
                     case PlayerType.VR: GameData.AddScore(PlayerType.Desktop); break;
                     default: throw new Exception($"[PuckCollision] Unknown player: {entity.GoalOwner}");
                 }
+                
+                entity.GoalSound();
 
                 Initialize(true);
             }
-            
-            /*if (other.gameObject.name == "AirHockeyPad" || other.gameObject.name == "AirHockeyPad (1)")
-            {
-                Vector3 dir = transform.position - (other.contacts[0].point + new Vector3(0, transform.position.y, 0));
-                _rigidBody.AddForce(dir * hitForce);
-            }
-            /*else if (other.gameObject.name == "AirHockeyTable")
-            {
-                Vector3 dir = transform.position -
-                              (new Vector3(other.contacts[0].point.x, transform.position.y, other.contacts[0].point.z));
-                dir.z = -dir.z;
-                dir.y = -dir.y;
-                //puckBody.AddForce(puckBody.velocity.normalized * 5f);
-                Debug.Log("ca tape la table");
-            }*/
         }
 
         private void Initialize(bool inverseInitialForceDirection = false)
